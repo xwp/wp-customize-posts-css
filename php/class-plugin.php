@@ -48,7 +48,7 @@ class Plugin {
 		add_action( 'customize_dynamic_setting_args', array( $this, 'filter_customize_dynamic_setting_args' ), 20, 2 );
 		add_action( 'customize_controls_enqueue_scripts', array( $this, 'customize_controls_enqueue_scripts' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_preview_scripts' ) );
-		add_action( 'the_post', array( $this, 'print_post_custom_css' ) );
+		add_action( 'wp_head', array( $this, 'print_queried_posts_custom_css' ), 102 ); // Because theme's Custom CSS is output at 101.
 	}
 
 	/**
@@ -170,6 +170,24 @@ class Plugin {
 	}
 
 	/**
+	 * Print CSS for all queried posts in the head.
+	 *
+	 * Then print CSS for any post added thereafter in sub-queries when 'the_post' action happens.
+	 *
+	 * @global \WP_Query $wp_the_query
+	 */
+	public function print_queried_posts_custom_css() {
+		global $wp_the_query;
+		if ( $wp_the_query instanceof \WP_Query ) {
+			foreach ( $wp_the_query->posts as $post ) {
+				$this->print_post_custom_css( $post );
+			}
+		}
+
+		add_action( 'the_post', array( $this, 'print_post_custom_css' ) );
+	}
+
+	/**
 	 * Keep track of the styles that have already been printed.
 	 *
 	 * @var array
@@ -190,9 +208,9 @@ class Plugin {
 
 		$custom_css = get_post_meta( $post->ID, static::META_KEY, true );
 		if ( $custom_css ) { // Note this doesn't need is_customize_preview() because we can dynamically add style tags as they are encountered.
-			printf( '<style type="text/css" class="post-custom-css-%d">', $post->ID );
+			printf( "<style type='text/css' class='post-custom-css-%d'>\n", $post->ID );
 			echo strip_tags( $custom_css ); // Note that esc_html() cannot be used because `div &gt; span` is not interpreted properly.
-			echo '</style>';
+			echo "</style>\n";
 
 			$this->already_printed[ $post->ID ] = true;
 		}
