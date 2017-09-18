@@ -30,13 +30,13 @@ See also [#38707](https://core.trac.wordpress.org/ticket/38707) which proposes e
 
 ## Screenshots ##
 
-### Custom CSS control appears in each post section with initial selectors for targeting post/page in post container and body container.
+### Custom CSS control appears in each post section with initial selectors for targeting post/page in post container (`post_class()`) and body container (`body_class()`).
 
-![Custom CSS control appears in each post section with initial selectors for targeting post/page in post container and body container.](wp-assets/screenshot-1.png)
+![Custom CSS control appears in each post section with initial selectors for targeting post/page in post container (`post_class()`) and body container (`body_class()`).](wp-assets/screenshot-1.png)
 
-### The custom CSS appears with the post on an index page, and here the `.hentry` selector is key.
+### The custom CSS appears with the post on an index page and here the `.hentry` selector is key for targeting the post in The Loop.
 
-![The custom CSS appears with the post on an index page, and here the `.hentry` selector is key.](wp-assets/screenshot-2.png)
+![The custom CSS appears with the post on an index page and here the `.hentry` selector is key for targeting the post in The Loop.](wp-assets/screenshot-2.png)
 
 ### The custom CSS also appears with the post on its singular template, and here a `body` selector with an appropriate post-specific class name is useful for changing the look of the entire page.
 

@@ -27,8 +27,8 @@ See also [#38707](https://core.trac.wordpress.org/ticket/38707) which proposes e
 
 == Screenshots ==
 
-1. Custom CSS control appears in each post section with initial selectors for targeting post/page in post container and body container.
-2. The custom CSS appears with the post on an index page, and here the `.hentry` selector is key.
+1. Custom CSS control appears in each post section with initial selectors for targeting post/page in post container (`post_class()`) and body container (`body_class()`).
+2. The custom CSS appears with the post on an index page and here the `.hentry` selector is key for targeting the post in The Loop.
 3. The custom CSS also appears with the post on its singular template, and here a `body` selector with an appropriate post-specific class name is useful for changing the look of the entire page.
 
 == Changelog ==
