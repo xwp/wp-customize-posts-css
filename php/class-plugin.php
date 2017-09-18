@@ -46,7 +46,6 @@ class Plugin {
 		add_action( 'customize_register', array( $this, 'customize_register' ), 9 );
 		add_action( 'customize_posts_register_meta', array( $this, 'register_post_meta' ) );
 		add_action( 'customize_dynamic_setting_args', array( $this, 'filter_customize_dynamic_setting_args' ), 20, 2 );
-		// add_action( 'customize_dynamic_partial_args', array( $this, 'filter_customize_dynamic_partial_args' ), 20, 2 );
 		add_action( 'customize_controls_enqueue_scripts', array( $this, 'customize_controls_enqueue_scripts' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_preview_scripts' ) );
 		add_action( 'the_post', array( $this, 'print_post_custom_css' ) );
@@ -75,7 +74,7 @@ class Plugin {
 	 * Add post type support by default for all public post types.
 	 */
 	public function add_post_type_support() {
-		$post_types = get_post_types( array( 'public' => true ), 'names' );
+		$post_types = get_post_types( array_fill_keys( array( 'public' ), true ), 'names' );
 		foreach ( $post_types as $post_type ) {
 			\add_post_type_support( $post_type, static::THEME_SUPPORT );
 		}
@@ -89,6 +88,10 @@ class Plugin {
 		wp_enqueue_script( $handle );
 		$settings = wp_enqueue_code_editor( array(
 			'type' => 'text/css',
+			'codemirror' => array(
+				'indentUnit' => 2,
+				'tabSize' => 2,
+			),
 		) );
 		wp_add_inline_script( $handle, sprintf(
 			'CustomizePostsCSS.init( wp.customize, %s );',
@@ -127,7 +130,7 @@ class Plugin {
 	 * @param \WP_Customize_Posts $posts_component Posts Component.
 	 */
 	function register_post_meta( \WP_Customize_Posts $posts_component ) {
-		$post_types = get_post_types( array( 'public' => true ), 'names' );
+		$post_types = get_post_types_by_support( static::THEME_SUPPORT );
 		foreach ( $post_types as $post_type ) {
 			$posts_component->register_post_type_meta( $post_type, static::META_KEY, array(
 				'default' => '', // Default will be set dynamically in filter_customize_dynamic_setting_args().
@@ -167,39 +170,6 @@ class Plugin {
 	}
 
 	/**
-	 * Print the post Custom CSS for each post in the main post Loop.
-	 *
-	 * @todo Do this in the footer too? Tally up all posts that are rendered on the page and print remainders in the footer? Use the_post() action instead?
-	 * @global \WP_Query $wp_the_query
-	 */
-	//function print_post_custom_css() {
-	//	global $wp_the_query;
-	//	foreach ( $wp_the_query->posts as $post ) {
-	//		$custom_css = get_post_meta( $post->ID, static::META_KEY, true );
-	//		if ( $custom_css ) { // Note this doesn't need is_customize_preview() because we can dynamically add style tags as they are encountered.
-	//			echo sprintf( '<style type="text/css" class="post-custom-css-%d">', $post->ID );
-	//			echo strip_tags( $custom_css ); // Note that esc_html() cannot be used because `div &gt; span` is not interpreted properly.
-	//			echo '</style>';
-	//		}
-	//
-	//		// @todo Registering partials isn't really needed because we can use postMessage entirely.
-	//		if ( is_customize_preview() ) {
-	//			global $wp_customize;
-	//			$id = \WP_Customize_Postmeta_Setting::get_post_meta_setting_id( $post, static::META_KEY );
-	//			$wp_customize->selective_refresh->add_partial( $id, array(
-	//				'type' => 'post_custom_css',
-	//				'settings' => array( $id ),
-	//				'selector' => sprintf( '.post-custom-css-%d', $post->ID ),
-	//				'container_inclusive' => false,
-	//				'render_callback' => function() use ( $post ) {
-	//					return get_post_meta( $post->ID, static::META_KEY, true );
-	//				},
-	//			) );
-	//		}
-	//	}
-	//}
-
-	/**
 	 * Keep track of the styles that have already been printed.
 	 *
 	 * @var array
@@ -229,38 +199,6 @@ class Plugin {
 	}
 
 	/**
-	 * Dynamically supply default values for settings.
-	 *
-	 * @todo This can be removed since dynamic registration isn't really necessary.
-	 * @param false|array $partial_args The arguments to the WP_Customize_Partial constructor.
-	 * @param string      $partial_id   ID for dynamic partial.
-	 * @return array|false Setting args or false if not recognized.
-	 */
-	//function filter_customize_dynamic_partial_args( $partial_args, $partial_id ) {
-	//	global $wp_customize;
-	//
-	//	// Partial ID and setting ID are the same here for convenience.
-	//	$setting = $wp_customize->get_setting( $partial_id );
-	//	if ( ! ( $setting instanceof \WP_Customize_Postmeta_Setting ) || static::META_KEY !== $setting->meta_key ) {
-	//		return $partial_args;
-	//	}
-	//
-	//	if ( false === $partial_args ) {
-	//		$partial_args = array();
-	//	}
-	//
-	//	$partial_args['type'] = 'post_custom_css';
-	//	$partial_args['settings'] = array( $setting->id );
-	//	$partial_args['container_inclusive'] = false;
-	//	$partial_args['selector'] = sprintf( '.post-custom-css-%d', $setting->post_id );
-	//	$partial_args['render_callback'] = function() use ( $setting ) {
-	//		return $setting->value();
-	//	};
-	//
-	//	return $partial_args;
-	//}
-
-	/**
 	 * Validate CSS.
 	 *
 	 * @see \WP_Customize_Custom_CSS_Setting::validate()
@@ -270,7 +208,7 @@ class Plugin {
 	 */
 	function validate_css( $validity, $css ) {
 		if ( preg_match( '#</?\w+#', $css ) ) {
-			$validity->add( 'illegal_markup', __( 'Markup is not allowed in CSS.' ) );
+			$validity->add( 'illegal_markup', __( 'Markup is not allowed in CSS.', 'default' ) );
 		}
 		return $validity;
 	}
