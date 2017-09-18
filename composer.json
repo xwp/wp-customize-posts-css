@@ -1,0 +1,22 @@
+{
+    "name": "xwp/wp-customize-posts-css",
+    "version": "0.1.0",
+    "description": "Adding post-specific CSS.",
+    "homepage": "https://github.com/xwp/wp-customize-posts-css/",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0",
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/xwp/wp-customize-posts-css.git"
+        }
+    ],
+    "require": {
+        "php": ">=5.2"
+    },
+    "require-dev": {
+        "wp-coding-standards/wpcs": "*",
+        "wimg/php-compatibility": "*",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.4.2"
+    }
+}

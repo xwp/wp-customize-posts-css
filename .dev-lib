@@ -1,0 +1,2 @@
+CHECK_SCOPE=changed-files
+WPCS_GIT_TREE=develop
