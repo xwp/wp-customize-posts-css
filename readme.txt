@@ -25,6 +25,12 @@ This plugin has a few dependencies:
 
 See also [#38707](https://core.trac.wordpress.org/ticket/38707) which proposes extending the Custom CSS editor in core with being able to edit per page CSS.
 
+== Screenshots ==
+
+1. Custom CSS control appears in each post section with initial selectors for targeting post/page in post container and body container.
+2. The custom CSS appears with the post on an index page, and here the `.hentry` selector is key.
+3. The custom CSS also appears with the post on its singular template, and here a `body` selector with an appropriate post-specific class name is useful for changing the look of the entire page.
+
 == Changelog ==
 
 = 0.1.0 =
