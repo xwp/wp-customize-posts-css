@@ -43,7 +43,6 @@ class Plugin {
 		add_action( 'wp_default_scripts', array( $this, 'register_scripts' ), 100 );
 		add_action( 'init', array( $this, 'add_post_type_support' ) );
 		add_action( 'wp_head', array( $this, 'print_post_custom_css' ), 102 );
-		add_action( 'customize_register', array( $this, 'customize_register' ), 9 );
 		add_action( 'customize_posts_register_meta', array( $this, 'register_post_meta' ) );
 		add_action( 'customize_dynamic_setting_args', array( $this, 'filter_customize_dynamic_setting_args' ), 20, 2 );
 		add_action( 'customize_controls_enqueue_scripts', array( $this, 'customize_controls_enqueue_scripts' ) );
