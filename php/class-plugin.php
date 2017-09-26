@@ -201,7 +201,7 @@ class Plugin {
 	function print_post_custom_css( $post ) {
 		$post = get_post( $post );
 
-		if ( isset( $this->already_printed[ $post->ID ] ) ) {
+		if ( ! $post || isset( $this->already_printed[ $post->ID ] ) ) {
 			return;
 		}
 
