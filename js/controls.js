@@ -1,4 +1,4 @@
-/* global wp, _ */
+/* global _ */
 /* exported CustomizePostsCSS */
 /* eslint no-magic-numbers: ["error", { "ignore": [0,1,2] }] */
 /* eslint complexity: ["error", 5] */
@@ -83,24 +83,20 @@ var CustomizePostsCSS = (function() {
 		}
 
 		control = new component.api.CodeEditorControl( controlId, {
-			params: {
-				section: section.id,
-				priority: 100,
-				label: component.data.l10n.control_label,
-				active: true,
-				content: '<li class="customize-control customize-control-code_editor"></li>',
-				description: '',
-				code_type: 'text/css',
-				editor_settings: component.data.editorSettings,
-				settings: {
-					'default': settingId
-				},
-				type: 'code_editor'
+			section: section.id,
+			priority: 100,
+			label: component.data.l10n.control_label,
+			active: true,
+			description: '',
+			code_type: 'text/css',
+			editor_settings: component.data.editorSettings,
+			settings: {
+				'default': settingId
 			}
 		} );
 
 		// Register.
-		component.api.control.add( control.id, control );
+		component.api.control.add( control );
 
 		return control;
 	};
