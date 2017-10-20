@@ -83,16 +83,11 @@ var CustomizePostsCSS = (function() {
 		}
 
 		control = new component.api.CodeEditorControl( controlId, {
+			setting: settingId,
 			section: section.id,
-			priority: 100,
+			editor_settings: component.data.editorSettings, // See \Customize_Posts_CSS\Plugin::customize_controls_enqueue_scripts().
 			label: component.data.l10n.control_label,
-			active: true,
-			description: '',
-			code_type: 'text/css',
-			editor_settings: component.data.editorSettings,
-			settings: {
-				'default': settingId
-			}
+			priority: 100
 		} );
 
 		// Register.
